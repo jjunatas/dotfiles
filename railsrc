@@ -1,0 +1,16 @@
+# User-wide railsrc
+
+def me(username=nil)
+  begin
+  	@me ||= User.find_by_login( username || 'cjharrelson@iberon.com' )
+	rescue
+		@me ||= User.find_by_email( username || 'cjharrelson@iberon.com' )
+	end
+end
+
+alias r reload!
+
+# Kinda evil, kinda awesome
+#def method_missing(method, *args, &block)
+#  User.find_by_login(method.to_s) || super
+#end

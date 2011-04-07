@@ -1,0 +1,74 @@
+[user]
+	name = Jason Harrelson
+	email = jason@lookforwardenterprises.com
+	
+[github]
+	user = midas
+	
+[color]
+	ui = auto
+	
+[color "branch"]
+	current = yellow reverse
+	local = yellow
+	remote = green
+	
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+	
+[color "status"]
+	added = yellow
+	changed = green
+	untracked = cyan
+	
+[color "diff"]
+	whitespace = red reverse
+	
+[core]
+	whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+	editor = vi
+	pager = less -+$LESS -FRX
+	
+[alias]
+	ai = add -i
+	st = status
+	cm = commit
+	br = branch
+	co = checkout
+	cob = checkout -b
+	df = diff
+	lg = log -p
+	gb = git branch
+	gba = git branch -a
+	gc = git commit -v
+	gd = git diff | mate
+	gl = git pull
+	gp = git push
+	gst = git status
+	
+[branch]  
+  autosetuprebase = always
+
+[merge "bundleinstall"]
+	name = bundle install
+	driver = bundle install
+	
+[merge "railsschema"]
+	name = newer Rails schema version
+	driver = "ruby -e '\n\
+		system %(git), %(merge-file), %(--marker-size=%L), %(%A), %(%O), %(%B)\n\
+		b = File.read(%(%A))\n\
+		b.sub!(/^<+ .*\\nActiveRecord::Schema\\.define.:version => (\\d+). do\\n=+\\nActiveRecord::Schema\\.define.:version => (\\d+). do\\n>+ .*/) do\n\
+		  %(ActiveRecord::Schema.define(:version => #{[$1, $2].max}) do)\n\
+		end\n\
+		File.open(%(%A), %(w)) {|f| f.write(b)}\n\
+		exit 1 if b.include?(%(<)*%L)'"
+
+[diff "zip"]
+  textconv = unzip -c -a
+
+[gui]
+	recentrepo = /Users/cjharrelson/development/iberon/ncite_server

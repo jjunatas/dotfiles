@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+#
+# Usage:
+#   git remove-tags '^v\d'
+#
+
+filter = ARGV.length > 0 ? 
+           ARGV.first : 
+           nil
+  
+
+enumerate_tags_cmd = "git tag"
+
+tags = `#{enumerate_tags_cmd}`.split( "\n" )
+
+puts "Existing Tags (pre):",
+     "",
+     `#{enumerate_tags_cmd}`
+
+puts "",
+     "Removing Tags...",
+     ""
+
+tags.each do |tag|
+  next if filter && !(/#{filter}/.match( tag ))
+  
+  cmd = "git tag -d #{tag}"
+  # puts cmd
+  `#{cmd}`
+end
+
+puts "",
+     "Existing Tags (post):",
+     "",
+     `#{enumerate_tags_cmd}`
