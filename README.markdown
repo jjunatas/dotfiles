@@ -5,6 +5,14 @@ Idea and text for this README mostly ganked from [njonsson/dotfiles](https://git
 
 This repository contains my OS X shell configuration.
 
+First, create a ~/.api-tokens.yml file with contexts like (replace with you actual API keys):
+
+    ---
+    gemcutter: 7hasfuke9asdfmnasfhe89
+    github: jkasdjf8asdkenfasd9ekkj
+
+Then simply:
+
 1. Clone this repository.
 2. `cd` into it.
 3. Type `rake --tasks`.
@@ -30,4 +38,4 @@ rather than to my home directory.
 
 ----------------------------------------------------------------
 
-† Note: _Rakefile_ and _*.markdown_ are not treated as dotfiles.
+† Note: _Rakefile_, _*.markdown_ and _*-generated_ are not treated as dotfiles.

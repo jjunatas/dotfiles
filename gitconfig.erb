@@ -4,6 +4,7 @@
 	
 [github]
 	user = midas
+	token = <%= require 'yaml'; YAML::load( File.open( "#{File.expand_path( '~' )}/.api-tokens.yml" ) )['github'] %>
 	
 [color]
 	ui = auto
