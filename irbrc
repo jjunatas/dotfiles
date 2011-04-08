@@ -100,12 +100,6 @@ end
 # # logging into console by default
 # enable_logger
 
-# # # 
-# named routes and helpers
-
-include Rails.application.routes.url_helpers
-default_url_options[:host] = Rails.application.class.parent_name.downcase
-
 # # #
 # plain sql
 

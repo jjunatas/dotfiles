@@ -14,3 +14,9 @@ alias r reload!
 #def method_missing(method, *args, &block)
 #  User.find_by_login(method.to_s) || super
 #end
+
+# # # 
+# named routes and helpers
+
+include Rails.application.routes.url_helpers
+default_url_options[:host] = Rails.application.class.parent_name.downcase

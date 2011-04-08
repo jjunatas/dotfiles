@@ -1,0 +1,63 @@
+#!/usr/bin/env ruby
+#
+# Cleans up sensitive data automatically.
+#
+# First, create a ~/.clean-projects.yml file that has contents something like:
+# ---
+# :project1:
+#   :path: /path/to/project1
+#   :cmd: cmd-to-clean-project1
+# :project2:
+#   :path: /path/to/project2
+#   :cmd: cmd-to-clean-project1
+#
+# Usage:
+#   clean-sensitive-data
+#
+
+require 'yaml'
+
+ANSI_RESET  = "\033[0m"
+ANSI_RED    = "\033[31m"
+ANSI_BLUE   = "\033[34m"
+ANSI_CYAN  = "\033[36m"
+ANSI_GREEN  = "\033[32m"
+ANSI_YELLOW = "\033[33m"
+
+puts ''
+
+def config_file
+  "#{File.expand_path( '~' )}/.clean-projects.yml"
+end
+
+def run
+  projects = YAML::load( File.open( config_file ) )
+
+  projects.each do |name, params|
+    puts "#{ANSI_GREEN}Cleaning project #{name}...#{ANSI_RESET}"
+    cmd = "source \"$HOME/.rvm/scripts/rvm\" && cd #{params[:path]} && #{params[:cmd]}"
+    # cmd = "cd #{params[:path]} && #{params[:cmd]}"
+    puts "  #{ANSI_CYAN}#{cmd}#{ANSI_RESET}", ''
+    `#{cmd}`
+  end
+end
+
+def usage
+  puts "Please create the config file: #{config_file}", ""
+  puts "The file should contain something like:", ""
+  puts "---",
+       ":project1:",
+       "  :path: /path/to/project1",
+       "  :cmd: cmd-to-clean-project1",
+       ":project2:",
+        "  :path: /path/to/project2",
+        "  :cmd: cmd-to-clean-project2"
+end
+
+if File.exists?( config_file )
+  run
+else
+  usage
+end
+
+puts ''
