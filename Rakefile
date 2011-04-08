@@ -18,10 +18,13 @@ def generate_or_symlink(file, options={})
   end
 
   if is_erb
-    File.open dotfile, 'w' do |f|
+    generated_file = File.join( File.expand_path( File.dirname(__FILE__) ), "#{basename}-generated" )
+    File.open generated_file, 'w' do |f|
       f.write ERB.new(File.read(file)).result
     end
-    success "Generated #{dotfile_short} from #{File.basename(file)}"
+    success "Generated #{File.basename(generated_file)} from #{File.basename(file)}"
+    File.symlink generated_file, dotfile
+    success "  Symlinked #{dotfile_short} to #{File.basename(generated_file)}"
   else
     begin
       File.symlink file, dotfile
@@ -44,10 +47,9 @@ end
 def setup(options={})
   Dir.glob("#{File.dirname __FILE__}/*") do |entry|
     if (File.expand_path(entry) == File.expand_path(__FILE__)) ||
-       (File.extname(entry).downcase == '.markdown')
+       (File.extname(entry).downcase == '.markdown')           ||
+       (File.basename(entry).include?('-generated'))
       next
-    # elsif File.directory?(entry)  
-    #   symlink_directory entry, options
     end
 
     generate_or_symlink entry, options
