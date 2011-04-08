@@ -1,0 +1,102 @@
+#!/usr/bin/env ruby
+#
+require 'rubygems'
+
+ruby = 'use ruby-1.8.7-p302'
+gemset = 'scripts'
+required_gems = [
+  ['mechanize', '0.9.3'],
+  ['firewatir', nil],
+  ['scrubyt',   nil]
+]
+
+
+puts "Switching to standard Ruby and gemset used for scripts...",
+     "   " + `rvm use #{ruby}@#{gemset}`
+
+required_gems.each do |required_gem, version|
+  puts "Ensuring #{required_gem} is installed..."
+  next unless `gem list #{required_gem}`.strip.empty?
+  puts "Installing gem #{required_gem}#{(version.nil? || version.empty?) ? '' : " v#{version}"}..."
+  puts `gem install #{required_gem}#{(version.nil? || version.empty?) ? '' : " --version=#{version}"}`
+end
+
+require 'scrubyt'
+
+data = Scrubyt::Extractor.define do
+  fetch "/Users/cjharrelson/Desktop/a.htm"
+  
+  # title '//head/title'
+  
+  table "/html/body/table" do
+    row "//tr" do
+      name "/td[1]"
+      carrier "/td[2]"
+    end
+  end
+  # properties '//table' do
+  #   properties '//tbody' do
+  #     properties '//tr' do
+  #       name "/td[1]"
+  #       carrier "/td[2]"
+  #     end
+  #   end
+  # end
+end
+ 
+def keys
+  %w(
+    archwirelessus
+    attus
+    bandwidthcomus
+    boostus
+    cellularsouthus
+    choiceus
+    cingularus
+    coxus
+    cricketus
+    iowawirelessus
+    level3us
+    metropcsus
+    mtsca
+    nextelus
+    pocketus
+    rnktelus
+    sprintus
+    thumbus
+    tmobileus
+    tritonpcsus
+    unitahbasinus
+    unitedwirelessus
+    uscellularus
+    verizonus
+    viaerous
+    virginus
+    wcentralus
+    westernwus
+    worldcallus
+    xocomus
+    unknown
+    failure
+  )
+end
+
+carriers = data.to_hash.first[:carrier].split( ',' ).map { |c| c.downcase }
+names = data.to_hash.first[:name].split( ',' ).map { |n| n.gsub( /\ +/, ' ' ) }
+zipped = names.zip( carriers )
+# filtered = zipped.reject { |n,c| keys.include?( c ) }
+all = (carriers + (keys - carriers)).sort
+
+puts ''
+puts zipped.inspect
+puts ''
+puts carriers.inspect
+puts ''
+puts all.inspect
+puts ''
+
+puts "%w("
+all.each { |c| puts "#{c}\n"}
+puts ")"
+
+puts (keys - carriers).inspect
